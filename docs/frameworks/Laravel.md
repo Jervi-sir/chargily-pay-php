@@ -66,21 +66,38 @@ Route::post('chargilypay/webhook', [ChargilyPayController::class, "webhook"])->n
 ```
 
 -   Exclude the webhook_endpoint route from the CSRF verification
-    1. Go to Middleware `app/Http/Middleware/VerifyCsrfToken.php`
-    2. Add `chargilypay/webhook` to except
-    ```php
-    class VerifyCsrfToken extends Middleware
-    {
-      /**
-       * The URIs that should be excluded from CSRF verification.
-       *
-       * @var array<int, string>
-       */
-      protected $except = [
-          'chargilypay/webhook',
-      ];
-    }
-    ```
+
+For Laravel 10 and older
+
+1. Go to Middleware `app/Http/Middleware/VerifyCsrfToken.php`
+2. Add `chargilypay/webhook` to except
+    
+```php
+class VerifyCsrfToken extends Middleware
+{
+    /**
+    * The URIs that should be excluded from CSRF verification.
+    *
+    * @var array<int, string>
+    */
+    protected $except = [
+        'chargilypay/webhook',
+    ];
+}
+```    
+For Laravel 11
+  
+1. Go to `bootstrap/app.php`
+2. Add the following inside `withMiddleware`
+    
+```php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->validateCsrfTokens(except: [
+    'chargilypay/webhook',
+]);
+```
+
+    
 
 ### 4. Create controler
 
